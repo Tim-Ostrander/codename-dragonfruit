@@ -176,8 +176,9 @@ const CONFIG = {
   endpoint: "https://script.google.com/macros/s/AKfycbyop8zlDPwxnE_BWNPJnKi2rX2z4nW0xYpTeFkZlM1y_t7UCISYiXr_bcP9x9bsjpZv4A/exec",
   title: "Dragonfruit",     // shown under the "codename" stamp
   intro: "Help pick a night for our first session. Tap the times you could play, then save. It takes about a minute.",
-  start: "",              // first day as "2026-10-05", or "" for today
-  weeks: 4,               // how many weeks to show
+  start: "2026-10-04",    // first day as "2026-10-05", or "" for today
+  weeks: 9,               // how many weeks to show
+  end: "2026-11-30",      // last day to show, or "" for no cutoff
   days: [0,1,2,3,4,5,6],  // 0 = Sun ... 6 = Sat
   blocks: ["aft","eve"]   // any of "mor", "aft", "eve", "late"
 };
@@ -211,8 +212,8 @@ function cleanSlots(s){const o={};if(s&&typeof s==="object")for(const k in s)if(
 function hasAny(o){for(const k in o)return true;return false}
 function buzz(){try{navigator.vibrate&&navigator.vibrate(8)}catch(e){}}
 function dates(){
-  const s=/^\d{4}-\d{2}-\d{2}$/.test(CONFIG.start)?parseIso(CONFIG.start):today(),t=today(),out=[];
-  for(let i=0;i<(CONFIG.weeks||4)*7;i++){const d=new Date(s.getFullYear(),s.getMonth(),s.getDate()+i);if(d>=t&&CONFIG.days.includes(d.getDay()))out.push(d)}
+  const s=/^\d{4}-\d{2}-\d{2}$/.test(CONFIG.start)?parseIso(CONFIG.start):today(),t=today(),out=[],e=/^\d{4}-\d{2}-\d{2}$/.test(CONFIG.end||"")?parseIso(CONFIG.end):null;
+  for(let i=0;i<(CONFIG.weeks||4)*7;i++){const d=new Date(s.getFullYear(),s.getMonth(),s.getDate()+i);if(d>=t&&(!e||d<=e)&&CONFIG.days.includes(d.getDay()))out.push(d)}
   return out;
 }
 
