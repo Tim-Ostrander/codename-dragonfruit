@@ -267,9 +267,12 @@ function storageNotice(){
 }
 
 /* ---------- server ---------- */
+function visitorId(){let v="";try{v=localStorage.getItem("sz-vid")||""}catch(e){}if(!/^[a-z0-9]{8,32}$/.test(v)){v=Math.random().toString(36).slice(2,12)+Date.now().toString(36);try{localStorage.setItem("sz-vid",v)}catch(e){}}return v}
+let visitSent=false;
 async function apiGet(){
   if(DEMO){try{return JSON.parse(localStorage.getItem("sz-demo")||"[]")}catch(e){return[]}}
-  const r=await fetch(CONFIG.endpoint+"?t="+Date.now());const j=await r.json();if(!j.ok)throw new Error("bad");return j.responses||[];
+  let q="?t="+Date.now();if(!visitSent){visitSent=true;q+="&v="+visitorId()}
+  const r=await fetch(CONFIG.endpoint+q);const j=await r.json();if(!j.ok)throw new Error("bad");return j.responses||[];
 }
 async function apiSave(name,slots){
   if(DEMO){let all=[];try{all=JSON.parse(localStorage.getItem("sz-demo")||"[]")}catch(e){}
